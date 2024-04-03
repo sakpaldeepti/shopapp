@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -36,6 +38,7 @@ import com.example.stacklabproject.ui.utils.CustButton
 import com.example.stacklabproject.ui.utils.ShoppingCartHeader
 import com.example.stacklabproject.ui.utils.cartList
 
+
 @Composable
 fun CartScreen(navController: NavController) {
     var showDialog by remember { mutableStateOf(false) }
@@ -45,21 +48,26 @@ fun CartScreen(navController: NavController) {
     val total by remember { derivedStateOf { calculateTotalPrice(cartItemsState) } }
     val context = LocalContext.current
 
-
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .background(color = Color(0xFFC5BAEC))
+            .verticalScroll(rememberScrollState())
+             // Add horizontal padding for better spacing
     ) {
         ShoppingCartHeader(onBackClicked = { navController.navigate("mainScreen") })
-        CartList(cartItems = cartItemsState) { product ->
-            cartItemsState.remove(product)
-            cartList.remove(product)
-            Toast.makeText(context,
-                " ${product.product.name} removed",
-                Toast.LENGTH_SHORT).show()
+        Column(
+            modifier = Modifier.weight(1f).fillMaxHeight()
+        ) {
+                CartList(cartItems = cartItemsState) { product ->
+                    cartItemsState.remove(product)
+                    cartList.remove(product)
+                    Toast.makeText(context,
+                        " ${product.product.name} removed",
+                        Toast.LENGTH_SHORT).show()
+                }
         }
-        Spacer(modifier = Modifier.weight(1f))
+
+        Spacer(modifier = Modifier.weight(0.07f))
 
         HorizontalDivider(modifier = Modifier.fillMaxWidth(), color = Color.Black)
         Row(
@@ -105,6 +113,8 @@ fun CartScreen(navController: NavController) {
             })
         }
     }
+
+
 }
 
 @Composable
